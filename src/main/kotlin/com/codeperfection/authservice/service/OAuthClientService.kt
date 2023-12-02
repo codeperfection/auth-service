@@ -11,13 +11,15 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
 import java.time.Instant
 import java.util.*
 
 @Service
 class OAuthClientService(
     private val registeredClientRepository: RegisteredClientRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val clock: Clock
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -31,7 +33,7 @@ class OAuthClientService(
         val oauthClientId = UUID.randomUUID()
         val registeredClient = RegisteredClient.withId(oauthClientId.toString())
             .clientId(clientDto.clientId)
-            .clientIdIssuedAt(Instant.now())
+            .clientIdIssuedAt(Instant.now(clock))
             .clientSecret(passwordEncoder.encode(clientDto.clientSecret))
             .clientName(clientDto.clientName)
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)

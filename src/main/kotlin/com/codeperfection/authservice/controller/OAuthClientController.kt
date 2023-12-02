@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 class OAuthClientController(private val oauthClientService: OAuthClientService) {
 
     @PostMapping
-    fun createOauthClient(@Valid @RequestBody createOauthClientDto: CreateOAuthClientDto): ResponseEntity<OAuthClientDto> =
-        ResponseEntity.ok(oauthClientService.createOAuthClient(createOauthClientDto))
+    fun createOauthClient(
+        @Valid @RequestBody createOauthClientDto: CreateOAuthClientDto
+    ): ResponseEntity<OAuthClientDto> = ResponseEntity.ok(oauthClientService.createOAuthClient(createOauthClientDto))
 }

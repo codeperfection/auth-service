@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -22,7 +23,8 @@ import java.util.*
 class UserService(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val clock: Clock
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -35,7 +37,7 @@ class UserService(
 
         val role = roleRepository.findByName(RoleName.ROLE_USER)
             ?: throw InternalServerErrorException("User role not found")
-        val now = OffsetDateTime.now()
+        val now = OffsetDateTime.now(clock)
         val user = User(
             id = UUID.randomUUID(),
             email = createUserDto.email,

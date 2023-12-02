@@ -1,0 +1,14 @@
+server:
+  port: 18081
+spring:
+  datasource:
+    url: jdbc:hsqldb:mem:testdb;MODE=PostgreSQL
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18081

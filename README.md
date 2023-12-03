@@ -12,6 +12,19 @@ Auth Service is a modern, secure authentication and authorization server. It pro
 - **Spring Boot Starters**: Including Actuator, Data JPA, Web, Validation, Security, and OAuth2 Authorization Server.
 - **Java Version**: Compatibility with Java 17.
 
+## How RSA keys are generated and encoded
+In order to create/sign/validate jwt tokens, we use pre-generated RSA keys (private one is protected with password).
+We use pre-generated RSA keys (instead of generating on the fly) in order to handle scaling of service (same keys are used in all pods).
+You can find these keys under `keys` directory of resources 
+
+Generation of keys was done with the following commands
+```shell
+openssl genpkey -algorithm RSA -out jwt_private_key.pem -pkeyopt rsa_keygen_bits:2048
+openssl rsa -pubout -in jwt_private_key.pem -out jwt_public_key.pem
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in jwt_private_key.pem -out jwt_private_key_encoded.pem -passout pass:<PASSWORD>
+```
+For details on how RSA keys are read and decoded please check `JwkSourceConfig` configuration class
+
 ## How to Run
 ### Running with Docker
 - Navigate to the project root directory.
@@ -26,3 +39,4 @@ Auth Service is a modern, secure authentication and authorization server. It pro
 2. **Configuring and Running the Application Locally**:
     - Ensure the application properties are configured to connect to `localhost:5433` for the database.
     - Run the application through your IDE or command line (using Gradle or Kotlin commands).
+

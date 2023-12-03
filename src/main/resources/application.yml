@@ -14,3 +14,5 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8081
+auth-server:
+  jwt-private-key-password: 6le/Hb30zwXKHQ1WYo7mHnw7v2G+8UCX/ewoou+661k=

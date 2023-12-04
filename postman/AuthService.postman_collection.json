@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "3926c770-fd18-4f4f-ab05-6738822d72d6",
+		"_postman_id": "a8c03430-3522-4694-b0c1-6dee1bd8dc94",
 		"name": "AuthService",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "31080886"
+		"_exporter_id": "2436219",
+		"_collection_link": "https://warped-crescent-338967.postman.co/workspace/codeperfection~1695b001-d1e9-4215-af01-0ddc496b0953/collection/2436219-a8c03430-3522-4694-b0c1-6dee1bd8dc94?action=share&source=collection_link&creator=2436219"
 	},
 	"item": [
 		{
@@ -70,7 +71,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"clientId\": \"1\",\n    \"clientSecret\": \"a\",\n    \"clientName\": \"b\",\n    \"redirectUri\": \"c\",\n    \"scopes\": []\n}",
+							"raw": "{\n    \"clientId\": \"1\",\n    \"clientSecret\": \"a\",\n    \"clientName\": \"b\",\n    \"authorizationGrantTypes\": [\n        \"REFRESH_TOKEN\"\n    ],\n    \"redirectUri\": \"c\",\n    \"scopes\": []\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -152,21 +153,9 @@
 		},
 		{
 			"name": "Get current user",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\": \"user1@email.com\",\n    \"password\": \"kqDt2WOjPiG2cTnXqJ0p\",\n    \"name\": \"Shipping Company\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "{{authServiceUrl}}/api/v1/users/me",
 					"host": [
@@ -192,7 +181,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"clientId\": \"{{authServiceClientId}}\",\n    \"clientSecret\": \"{{authServiceClientSecret}}\",\n    \"clientName\": \"Auth Service Client\",\n    \"redirectUri\": \"http://127.0.0.1/auth-code\",\n    \"scopes\": [\n        \"users:read\"\n    ]\n}",
+					"raw": "{\n    \"clientId\": \"{{authServiceClientId}}\",\n    \"clientSecret\": \"{{authServiceClientSecret}}\",\n    \"clientName\": \"Auth Service Client\",\n    \"authorizationGrantTypes\": [\n        \"AUTHORIZATION_CODE\",\n        \"REFRESH_TOKEN\",\n        \"CLIENT_CREDENTIALS\"\n    ],\n    \"redirectUri\": \"http://127.0.0.1/auth-code\",\n    \"scopes\": [\n        \"users:read\"\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -217,6 +206,11 @@
 	"auth": {
 		"type": "oauth2",
 		"oauth2": [
+			{
+				"key": "grant_type",
+				"value": "authorization_code",
+				"type": "string"
+			},
 			{
 				"key": "refreshRequestParams",
 				"value": [],
@@ -250,11 +244,6 @@
 			{
 				"key": "redirect_uri",
 				"value": "http://127.0.0.1/auth-code",
-				"type": "string"
-			},
-			{
-				"key": "grant_type",
-				"value": "authorization_code",
 				"type": "string"
 			},
 			{

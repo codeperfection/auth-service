@@ -33,7 +33,7 @@ class SecurityUserDetailsServiceTest {
     }
 
     @Test
-    fun `GIVEN user with email doesn't exist, WHEN loading user by username (email), THAN expected exception is thrown `() {
+    fun `GIVEN user with email doesn't exist, WHEN loading user by username (email), THEN expected exception is thrown `() {
         val email = "nonExistingEmailAddress"
         doReturn(null).`when`(userRepository).findByEmail(email)
         assertThrows<UsernameNotFoundException> {
@@ -43,7 +43,7 @@ class SecurityUserDetailsServiceTest {
     }
 
     @Test
-    fun `GIVEN user with email exists, WHEN loading user by username (email), THAN expected result returned`() {
+    fun `GIVEN user with email exists, WHEN loading user by username (email), THEN expected result returned`() {
         val email = "nonExistingEmailAddress"
         val password = "someEncodedPassword"
         val user = com.codeperfection.authservice.entity.User(

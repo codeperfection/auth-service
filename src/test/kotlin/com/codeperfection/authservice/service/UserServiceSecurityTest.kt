@@ -26,7 +26,7 @@ class UserServiceSecurityTest {
     private lateinit var underTest: UserService
 
     @Test
-    fun `GIVEN not authenticated user, WHEN getting user, expected exception is thrown`() {
+    fun `GIVEN not authenticated user, WHEN getting user, THEN expected exception is thrown`() {
         val userId = UUID.fromString("5c557f7e-1849-435a-a3c7-cf342fb8c380")
         assertThrows<AuthenticationCredentialsNotFoundException> {
             underTest.getUser(userId)
@@ -35,7 +35,7 @@ class UserServiceSecurityTest {
 
     @Test
     @WithMockUser(authorities = ["SCOPE_other"])
-    fun `GIVEN authenticated user doesn't have needed rights, WHEN getting user, expected exception is thrown`() {
+    fun `GIVEN authenticated user doesn't have needed rights, WHEN getting user, THEN expected exception is thrown`() {
         val userId = UUID.fromString("5c557f7e-1849-435a-a3c7-cf342fb8c380")
         assertThrows<AccessDeniedException> {
             underTest.getUser(userId)
@@ -44,7 +44,7 @@ class UserServiceSecurityTest {
 
     @Test
     @WithMockUser(authorities = ["SCOPE_users:read"])
-    fun `GIVEN correctly authenticated user, WHEN getting user, authorization check is successful`() {
+    fun `GIVEN correctly authenticated user, WHEN getting user, THEN authorization check is successful`() {
         val userId = UUID.fromString("5c557f7e-1849-435a-a3c7-cf342fb8c380")
         Mockito.doReturn(Optional.empty<User>()).`when`(userRepository).findById(userId)
         try {

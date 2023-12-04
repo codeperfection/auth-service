@@ -3,8 +3,8 @@
 Auth Service is a modern, secure authentication and authorization server. It provides robust user authentication and authorization functionality, leveraging OAuth2 standards and JWT for secure token management. Built using Spring Boot and Kotlin, it is designed for easy integration with microservices and web applications.
 
 ## Authors
-- Arshak Nazaryan
-- Hayk Khachatryan
+- [Arshak Nazaryan](https://github.com/nazaryan)
+- [Hayk Khachatryan](https://github.com/haykart)
 
 ## High-Level Description of Used Frameworks and Libraries
 - **Spring Boot (v3.1.5)**: For rapid application development, focusing on web services.
@@ -24,6 +24,12 @@ openssl rsa -pubout -in jwt_private_key.pem -out jwt_public_key.pem
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in jwt_private_key.pem -out jwt_private_key_encoded.pem -passout pass:<PASSWORD>
 ```
 For details on how RSA keys are read and decoded please check `JwkSourceConfig` configuration class
+
+## Supported authorization grant types
+Currently only 3 authorization grant types are supported
+- authorization code
+- client credentials
+- refresh token (cannot be used standalone)
 
 ## How to Run
 ### Running with Docker

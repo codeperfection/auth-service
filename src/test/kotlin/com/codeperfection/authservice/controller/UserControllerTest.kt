@@ -33,7 +33,7 @@ class UserControllerTest : ControllerTestBase() {
     }
 
     @Test
-    fun `GIVEN valid request, WHEN signing up user, THAN expected successful response is given`() {
+    fun `GIVEN valid request, WHEN signing up user, THEN expected successful response is given`() {
         val expectedRequestDto = CreateUserDto(
             email = "test@test.com",
             password = "verySecret",
@@ -76,7 +76,7 @@ class UserControllerTest : ControllerTestBase() {
     }
 
     @Test
-    fun `GIVEN request with wrong email string, WHEN signing up user, THAN request fails with client error and expected error details`() {
+    fun `GIVEN request with wrong email string, WHEN signing up user, THEN request fails with client error and expected error details`() {
         mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +96,7 @@ class UserControllerTest : ControllerTestBase() {
     }
 
     @Test
-    fun `GIVEN invalid request, WHEN signing up user, THAN request fails with client error and expected error details`() {
+    fun `GIVEN invalid request, WHEN signing up user, THEN request fails with client error and expected error details`() {
         mockMvc.perform(
             post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ class UserControllerTest : ControllerTestBase() {
     }
 
     @Test
-    fun `GIVEN valid authorization header, WHEN getting current user, THAN expected response is returned`() {
+    fun `GIVEN valid authorization header, WHEN getting current user, THEN expected response is returned`() {
         val userId = UUID.fromString("759a7cbc-06fd-4d7e-a0b2-c50eb78509d7")
         val responseDto = UserDto(
             id = userId,
@@ -146,7 +146,7 @@ class UserControllerTest : ControllerTestBase() {
     }
 
     @Test
-    fun `GIVEN request without valid authorization token, WHEN getting current user, THAN 401 is returned`() {
+    fun `GIVEN request without valid authorization token, WHEN getting current user, THEN 401 is returned`() {
         mockMvc.perform(get("/api/v1/users/me"))
             .andExpect(status().isUnauthorized)
     }

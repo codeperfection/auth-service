@@ -10,6 +10,8 @@ data class CreateOAuthClientDto(
     val clientSecret: String,
     @field:Size(min = 4, max = 128)
     val clientName: String,
+    @field:ValidAuthGrantTypes
+    val authorizationGrantTypes: List<AuthGrantType>,
     @field:Size(min = 4)
     val redirectUri: String,
     @field:NotEmpty

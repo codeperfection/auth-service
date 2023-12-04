@@ -1,5 +1,6 @@
 package com.codeperfection.authservice.service
 
+import com.codeperfection.authservice.dto.AuthGrantType
 import com.codeperfection.authservice.dto.CreateOAuthClientDto
 import com.codeperfection.authservice.dto.OAuthClientDto
 import com.codeperfection.authservice.exception.clienterror.OAuthClientIdTakenException
@@ -43,7 +44,7 @@ class OAuthClientServiceTest {
     }
 
     @Test
-    fun `GIVEN client with id already exist, WHEN creating oauth client, THAN expected exception is thrown`() {
+    fun `GIVEN client with id already exist, WHEN creating oauth client, THEN expected exception is thrown`() {
         val clientId = "b6b760f4-fa63-402f-8ab7-acfac1225f95"
         val existingClient = RegisteredClient
             .withId("06f0695e-314c-49ca-a324-5b8588443a9f")
@@ -59,6 +60,7 @@ class OAuthClientServiceTest {
                     clientId = clientId,
                     clientSecret = "someSecret",
                     clientName = "someName",
+                    authorizationGrantTypes = listOf(AuthGrantType.AUTHORIZATION_CODE, AuthGrantType.REFRESH_TOKEN),
                     redirectUri = "someUri",
                     scopes = listOf("users:write", "users:read")
                 )
@@ -69,7 +71,7 @@ class OAuthClientServiceTest {
     }
 
     @Test
-    fun `GIVEN no client with given id exist, WHEN creating oauth client, THAN client is created and returned`() {
+    fun `GIVEN no client with given id exist, WHEN creating oauth client, THEN client is created and returned`() {
         val clientId = "b6b760f4-fa63-402f-8ab7-acfac1225f95"
         doReturn(null).`when`(registeredClientRepository).findByClientId(clientId)
 
@@ -83,8 +85,15 @@ class OAuthClientServiceTest {
         val clientName = "someName"
         val redirectUri = "someUri"
         val scopes = listOf("users:write", "users:read")
+        val authorizationGrantTypes = listOf(AuthGrantType.AUTHORIZATION_CODE, AuthGrantType.REFRESH_TOKEN)
         val result = underTest.createOAuthClient(
-            CreateOAuthClientDto(clientId, clientSecret, clientName, redirectUri, scopes)
+            CreateOAuthClientDto(
+                clientId = clientId,
+                clientSecret = clientSecret,
+                clientName = clientName,
+                authorizationGrantTypes = authorizationGrantTypes,
+                redirectUri = redirectUri,
+                scopes = scopes)
         )
 
         val registeredClientArgumentCaptor = ArgumentCaptor.forClass(RegisteredClient::class.java)
@@ -106,7 +115,14 @@ class OAuthClientServiceTest {
             .scope("users:read")
             .build()
         assertEquals(expectedRegisteredClient, savedRegisteredClient)
-        assertEquals(OAuthClientDto(UUID.fromString(generatedId), clientName, redirectUri, scopes), result)
+        val expected = OAuthClientDto(
+            UUID.fromString(generatedId),
+            clientName,
+            authorizationGrantTypes,
+            redirectUri,
+            scopes
+        )
+        assertEquals(expected, result)
 
         verify(registeredClientRepository).findByClientId(clientId)
         verify(clock).instant()

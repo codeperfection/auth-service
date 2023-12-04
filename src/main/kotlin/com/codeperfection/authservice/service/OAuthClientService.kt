@@ -1,5 +1,6 @@
 package com.codeperfection.authservice.service
 
+import com.codeperfection.authservice.dto.AuthGrantType
 import com.codeperfection.authservice.dto.CreateOAuthClientDto
 import com.codeperfection.authservice.dto.OAuthClientDto
 import com.codeperfection.authservice.exception.clienterror.OAuthClientIdTakenException
@@ -37,8 +38,7 @@ class OAuthClientService(
             .clientSecret(passwordEncoder.encode(clientDto.clientSecret))
             .clientName(clientDto.clientName)
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .authorizationGrantTypes { it.addAll(clientDto.authorizationGrantTypes.map(AuthGrantType::springType)) }
             .redirectUri(clientDto.redirectUri)
             .scopes { it.addAll(clientDto.scopes) }
             .build()
@@ -48,6 +48,7 @@ class OAuthClientService(
         return OAuthClientDto(
             id = oauthClientId,
             clientName = clientDto.clientName,
+            authorizationGrantTypes = clientDto.authorizationGrantTypes,
             redirectUri = clientDto.redirectUri,
             scopes = clientDto.scopes
         )

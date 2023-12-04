@@ -48,7 +48,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `GIVEN email already exist, WHEN creating user, THAN expected exception is thrown`() {
+    fun `GIVEN email already exist, WHEN creating user, THEN expected exception is thrown`() {
         val email = "some@email.com"
         doReturn(true).`when`(userRepository).existsByEmail(email)
 
@@ -66,7 +66,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `GIVEN db doesn't have pre-configured role, WHEN creating user, THAN expected exception is thrown`() {
+    fun `GIVEN db doesn't have pre-configured role, WHEN creating user, THEN expected exception is thrown`() {
         val email = "some@email.com"
         doReturn(false).`when`(userRepository).existsByEmail(email)
         doReturn(null).`when`(roleRepository).findByName(RoleName.ROLE_USER)
@@ -86,7 +86,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `GIVEN non-existing user creation request, WHEN creating user, THAN user created and dto returned`() {
+    fun `GIVEN non-existing user creation request, WHEN creating user, THEN user created and dto returned`() {
         val email = "some@email.com"
         doReturn(false).`when`(userRepository).existsByEmail(email)
         val role = Role(UUID.fromString("291f0f30-ff56-4d67-9417-5ad43d7001d0"), RoleName.ROLE_USER)
@@ -129,7 +129,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `GIVEN missing user entity in db, WHEN getting user, expected exception is thrown`() {
+    fun `GIVEN missing user entity in db, WHEN getting user, THEN expected exception is thrown`() {
         val userId = UUID.fromString("5c557f7e-1849-435a-a3c7-cf342fb8c380")
         doReturn(Optional.empty<User>()).`when`(userRepository).findById(userId)
         assertThrows<UserNotFoundException> {
@@ -139,7 +139,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `GIVEN existing entity in db, WHEN getting user, expected result is returned`() {
+    fun `GIVEN existing entity in db, WHEN getting user, THEN expected result is returned`() {
         val userId = UUID.fromString("5c557f7e-1849-435a-a3c7-cf342fb8c380")
         val email = "someEmail"
         val name = "someName"

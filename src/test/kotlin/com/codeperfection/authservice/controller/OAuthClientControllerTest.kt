@@ -10,7 +10,9 @@ import org.hamcrest.Matchers.`is`
 import org.json.JSONArray
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -49,7 +51,7 @@ class OAuthClientControllerTest : ControllerTestBase() {
             redirectUri = "someUri",
             scopes = listOf("users:read", "users:write")
         )
-        doReturn(responseDto).`when`(oauthClientService).createOAuthClient(expectedRequestDto)
+        whenever(oauthClientService.createOAuthClient(expectedRequestDto)).thenReturn(responseDto)
 
         mockMvc.perform(
             post("/api/v1/oauth-clients")

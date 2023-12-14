@@ -10,6 +10,7 @@ import org.json.JSONArray
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
@@ -44,7 +45,7 @@ class UserControllerTest : ControllerTestBase() {
             email = "test@test.com",
             name = "someName"
         )
-        doReturn(responseDto).`when`(userService).createUser(expectedRequestDto)
+        whenever(userService.createUser(expectedRequestDto)).thenReturn(responseDto)
 
         mockMvc.perform(
             post("/api/v1/users")
@@ -123,7 +124,7 @@ class UserControllerTest : ControllerTestBase() {
             email = "test@test.com",
             name = "someName"
         )
-        doReturn(responseDto).`when`(userService).getUser(userId)
+        whenever(userService.getUser(userId)).thenReturn(responseDto)
 
         mockMvc.perform(
             get("/api/v1/users/me")

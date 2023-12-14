@@ -4,16 +4,18 @@ import com.codeperfection.authservice.dto.AuthGrantType
 import com.codeperfection.authservice.dto.CreateOAuthClientDto
 import com.codeperfection.authservice.dto.OAuthClientDto
 import com.codeperfection.authservice.exception.clienterror.OAuthClientIdTakenException
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.whenever
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
@@ -52,9 +54,9 @@ class OAuthClientServiceTest {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .redirectUri("someUri")
             .build()
-        doReturn(existingClient).`when`(registeredClientRepository).findByClientId(clientId)
+        whenever(registeredClientRepository.findByClientId(clientId)).thenReturn(existingClient)
 
-        assertThrows<OAuthClientIdTakenException> {
+        assertThatThrownBy {
             underTest.createOAuthClient(
                 CreateOAuthClientDto(
                     clientId = clientId,
@@ -65,7 +67,7 @@ class OAuthClientServiceTest {
                     scopes = listOf("users:write", "users:read")
                 )
             )
-        }
+        }.isInstanceOf(OAuthClientIdTakenException::class.java)
 
         verify(registeredClientRepository).findByClientId(clientId)
     }
@@ -73,14 +75,14 @@ class OAuthClientServiceTest {
     @Test
     fun `GIVEN no client with given id exist, WHEN creating oauth client, THEN client is created and returned`() {
         val clientId = "b6b760f4-fa63-402f-8ab7-acfac1225f95"
-        doReturn(null).`when`(registeredClientRepository).findByClientId(clientId)
+        whenever(registeredClientRepository.findByClientId(clientId)).thenReturn(null)
 
         val clientSecret = "someSecret"
         val encodedSecret = "encodedSecret"
-        doReturn(encodedSecret).`when`(passwordEncoder).encode(clientSecret)
+        whenever(passwordEncoder.encode(clientSecret)).thenReturn(encodedSecret)
 
         val now = Instant.parse("2023-01-01T09:00:00.00Z")
-        doReturn(now).`when`(clock).instant()
+        whenever(clock.instant()).thenReturn(now)
 
         val clientName = "someName"
         val redirectUri = "someUri"
@@ -93,7 +95,8 @@ class OAuthClientServiceTest {
                 clientName = clientName,
                 authorizationGrantTypes = authorizationGrantTypes,
                 redirectUri = redirectUri,
-                scopes = scopes)
+                scopes = scopes
+            )
         )
 
         val registeredClientArgumentCaptor = ArgumentCaptor.forClass(RegisteredClient::class.java)
@@ -114,7 +117,7 @@ class OAuthClientServiceTest {
             .scope("users:write")
             .scope("users:read")
             .build()
-        assertEquals(expectedRegisteredClient, savedRegisteredClient)
+        assertThat(savedRegisteredClient).isEqualTo(expectedRegisteredClient)
         val expected = OAuthClientDto(
             UUID.fromString(generatedId),
             clientName,
@@ -122,7 +125,7 @@ class OAuthClientServiceTest {
             redirectUri,
             scopes
         )
-        assertEquals(expected, result)
+        assertThat(result).isEqualTo(expected)
 
         verify(registeredClientRepository).findByClientId(clientId)
         verify(clock).instant()

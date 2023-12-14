@@ -3,7 +3,7 @@ services:
   auth_app_service:
     container_name: auth_service_app
     build: .
-    image: auth_service:latest
+    image: codeperfection/auth-service:latest
     restart: on-failure:3
     depends_on:
       - auth_db_service

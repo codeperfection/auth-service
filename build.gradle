@@ -38,7 +38,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
 
-
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:3.2.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test:6.2.0'
     testRuntimeOnly 'org.hsqldb:hsqldb'

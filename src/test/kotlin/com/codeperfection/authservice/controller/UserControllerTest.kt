@@ -9,12 +9,12 @@ import org.hamcrest.Matchers.`is`
 import org.json.JSONArray
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -24,9 +24,6 @@ class UserControllerTest : ControllerTestBase() {
 
     @MockBean
     private lateinit var userService: UserService
-
-    @Autowired
-    private lateinit var tokenGeneratorUtil: TokenGeneratorUtil
 
     @AfterEach
     fun tearDown() {
@@ -117,6 +114,7 @@ class UserControllerTest : ControllerTestBase() {
     }
 
     @Test
+    @WithMockUser
     fun `GIVEN valid authorization header, WHEN getting current user, THEN expected response is returned`() {
         val userId = UUID.fromString("759a7cbc-06fd-4d7e-a0b2-c50eb78509d7")
         val responseDto = UserDto(
@@ -126,10 +124,7 @@ class UserControllerTest : ControllerTestBase() {
         )
         whenever(userService.getUser(userId)).thenReturn(responseDto)
 
-        mockMvc.perform(
-            get("/api/v1/users/me")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenGeneratorUtil.generate(userId))
-        )
+        mockMvc.perform(get("/api/v1/users/$userId"))
             .andExpect(status().is2xxSuccessful)
             .andExpect(
                 content().json(

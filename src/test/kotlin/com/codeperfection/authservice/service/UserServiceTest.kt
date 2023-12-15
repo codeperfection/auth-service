@@ -15,11 +15,11 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.whenever
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.*
@@ -123,9 +123,9 @@ class UserServiceTest {
         verify(clock).zone
         verify(passwordEncoder).encode(password)
 
-        val userArgumentCaptor = ArgumentCaptor.forClass(User::class.java)
+        val userArgumentCaptor = argumentCaptor<User>()
         verify(userRepository).save(userArgumentCaptor.capture())
-        val actualSavedUser = userArgumentCaptor.value
+        val actualSavedUser = userArgumentCaptor.firstValue
         assertThat(actualSavedUser).isEqualTo(savedUser.copy(id = actualSavedUser.id))
     }
 

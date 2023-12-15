@@ -7,10 +7,10 @@ Auth Service is a modern, secure authentication and authorization server. It pro
 - [Hayk Khachatryan](https://github.com/haykart)
 
 ## High-Level Description of Used Frameworks and Libraries
-- **Spring Boot (v3.1.5)**: For rapid application development, focusing on web services.
-- **Kotlin (v1.8.22)**: As the primary programming language with Kotlin-specific Spring and JPA plugins.
+- **Spring Boot (v3.2.0)**: For rapid application development, focusing on web services.
+- **Kotlin (v1.9.20)**: As the primary programming language with Kotlin-specific Spring and JPA plugins.
 - **Spring Boot Starters**: Including Actuator, Data JPA, Web, Validation, Security, and OAuth2 Authorization Server.
-- **Java Version**: Compatibility with Java 17.
+- **Java Version**: Compatibility with Java 21.
 
 ## How RSA keys are generated and encoded
 In order to create/sign/validate jwt tokens, we use pre-generated RSA keys (private one is protected with password).
@@ -31,15 +31,18 @@ Currently only 3 authorization grant types are supported
 - client credentials
 - refresh token (cannot be used standalone)
 
+Use the Postman collection and environment in [postman](postman) directory to try out the endpoints.
+
 ## How to Run
 ### Running with Docker
+Required Docker version is 24.0.6 or above.
 - Navigate to the project root directory.
-- Run `docker-compose up` to build and start both the application and the database services.
+- Run `docker compose up` to build and start both the application and the database services.
 - The application will be accessible on `http://localhost:8081`.
 
 ### Running DB with Docker and Service with IDEA
 1. **Starting the Database Service**:
-    - Run `docker-compose up auth_db_service` to start only the PostgreSQL database service.
+    - Run `docker compose up auth_db_service` to start only the PostgreSQL database service.
     - The database will be accessible on `localhost:5433`.
 
 2. **Configuring and Running the Application Locally**:

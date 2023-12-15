@@ -2,7 +2,7 @@ server:
   port: 18081
 spring:
   datasource:
-    url: jdbc:hsqldb:mem:testdb;MODE=PostgreSQL
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
   jpa:
     hibernate:
       ddl-auto: validate

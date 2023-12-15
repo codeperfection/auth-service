@@ -26,6 +26,7 @@ import java.util.*
 class JwkSourceConfig(@Value("\${auth-server.jwt-private-key-password}") private val jwtPrivateKeyPassword: String) {
 
     companion object {
+        private const val KEY_ID = "9c994f2e-d040-4a04-941c-b4c54e2cecd8"
         private const val ENCODED_PRIVATE_KEY_LOCATION = "keys/jwt_private_key_encoded.pem"
         private const val PUBLIC_KEY_LOCATION = "keys/jwt_public_key.pem"
     }
@@ -35,7 +36,7 @@ class JwkSourceConfig(@Value("\${auth-server.jwt-private-key-password}") private
         JWKSet(
             RSAKey.Builder(readPublicKey())
                 .privateKey(readPrivateKey())
-                .keyID(UUID.randomUUID().toString())
+                .keyID(KEY_ID)
                 .build()
         )
     )

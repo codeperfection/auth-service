@@ -5,7 +5,6 @@ import com.codeperfection.authservice.dto.UserDto
 import com.codeperfection.authservice.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -17,7 +16,7 @@ class UserController(private val userService: UserService) {
     fun signUpUser(@Valid @RequestBody createUserDto: CreateUserDto): ResponseEntity<UserDto> =
         ResponseEntity.ok(userService.createUser(createUserDto))
 
-    @GetMapping("/me")
-    fun getCurrentUser(authentication: Authentication): ResponseEntity<UserDto> =
-        ResponseEntity.ok(userService.getUser(UUID.fromString(authentication.name)))
+    @GetMapping("/{userId}")
+    fun getCurrentUser(@PathVariable userId: UUID): ResponseEntity<UserDto> =
+        ResponseEntity.ok(userService.getUser(userId))
 }

@@ -1,4 +1,4 @@
-FROM gradle:8.4-jdk21 as build
+FROM gradle:8.5-jdk21 as build
 COPY . /app
 RUN addgroup authservice \
     && adduser --system --disabled-password --no-create-home --shell /bin/false --home /app --ingroup authservice authservice \

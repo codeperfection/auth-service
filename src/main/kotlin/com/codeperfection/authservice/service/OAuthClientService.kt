@@ -6,13 +6,14 @@ import com.codeperfection.authservice.dto.OAuthClientDto
 import com.codeperfection.authservice.exception.clienterror.OAuthClientIdTakenException
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
+import java.time.Duration
 import java.time.Instant
 import java.util.*
 
@@ -41,6 +42,7 @@ class OAuthClientService(
             .authorizationGrantTypes { it.addAll(clientDto.authorizationGrantTypes.map(AuthGrantType::springType)) }
             .redirectUri(clientDto.redirectUri)
             .scopes { it.addAll(clientDto.scopes) }
+            .tokenSettings(TokenSettings.builder().refreshTokenTimeToLive(Duration.ofDays(90)).build())
             .build()
 
         registeredClientRepository.save(registeredClient)

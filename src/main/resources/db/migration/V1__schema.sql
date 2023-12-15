@@ -57,3 +57,43 @@ CREATE TABLE oauth2_registered_client
     token_settings VARCHAR(2000) NOT NULL,
     PRIMARY KEY (id)
 );
+
+-- Spring's JdbcOAuth2AuthorizationService requires this table, see
+-- classpath:org/springframework/security/oauth2/server/authorization/oauth2-authorization-schema.sql
+CREATE TABLE oauth2_authorization
+(
+    id VARCHAR(100) NOT NULL,
+    registered_client_id VARCHAR(100) NOT NULL,
+    principal_name VARCHAR(200) NOT NULL,
+    authorization_grant_type VARCHAR(100) NOT NULL,
+    authorized_scopes VARCHAR(1000) DEFAULT NULL,
+    attributes VARCHAR DEFAULT NULL,
+    state VARCHAR(500) DEFAULT NULL,
+    authorization_code_value VARCHAR DEFAULT NULL,
+    authorization_code_issued_at TIMESTAMP DEFAULT NULL,
+    authorization_code_expires_at TIMESTAMP DEFAULT NULL,
+    authorization_code_metadata VARCHAR DEFAULT NULL,
+    access_token_value VARCHAR DEFAULT NULL,
+    access_token_issued_at TIMESTAMP DEFAULT NULL,
+    access_token_expires_at TIMESTAMP DEFAULT NULL,
+    access_token_metadata VARCHAR DEFAULT NULL,
+    access_token_type VARCHAR(100)  DEFAULT NULL,
+    access_token_scopes VARCHAR(1000) DEFAULT NULL,
+    oidc_id_token_value VARCHAR DEFAULT NULL,
+    oidc_id_token_issued_at TIMESTAMP DEFAULT NULL,
+    oidc_id_token_expires_at TIMESTAMP DEFAULT NULL,
+    oidc_id_token_metadata VARCHAR DEFAULT NULL,
+    refresh_token_value VARCHAR DEFAULT NULL,
+    refresh_token_issued_at TIMESTAMP DEFAULT NULL,
+    refresh_token_expires_at TIMESTAMP DEFAULT NULL,
+    refresh_token_metadata VARCHAR DEFAULT NULL,
+    user_code_value VARCHAR DEFAULT NULL,
+    user_code_issued_at TIMESTAMP DEFAULT NULL,
+    user_code_expires_at TIMESTAMP DEFAULT NULL,
+    user_code_metadata VARCHAR DEFAULT NULL,
+    device_code_value VARCHAR DEFAULT NULL,
+    device_code_issued_at TIMESTAMP DEFAULT NULL,
+    device_code_expires_at TIMESTAMP DEFAULT NULL,
+    device_code_metadata VARCHAR DEFAULT NULL,
+    PRIMARY KEY (id)
+);

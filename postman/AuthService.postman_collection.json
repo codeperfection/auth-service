@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a8c03430-3522-4694-b0c1-6dee1bd8dc94",
+		"_postman_id": "d6f2ab4b-caf5-4184-bffa-ab768c3b8b6f",
 		"name": "AuthService",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "2436219",
-		"_collection_link": "https://warped-crescent-338967.postman.co/workspace/codeperfection~1695b001-d1e9-4215-af01-0ddc496b0953/collection/2436219-a8c03430-3522-4694-b0c1-6dee1bd8dc94?action=share&source=collection_link&creator=2436219"
+		"_exporter_id": "31080886"
 	},
 	"item": [
 		{
@@ -12,6 +11,20 @@
 			"item": [
 				{
 					"name": "Unauthorized endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -32,6 +45,19 @@
 				},
 				{
 					"name": "Create User invalid body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -63,6 +89,20 @@
 				},
 				{
 					"name": "Create OAuth Client invalid body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -122,6 +162,19 @@
 		},
 		{
 			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"userId\", jsonData.id);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -130,7 +183,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"user@email.com\",\n    \"password\": \"test\",\n    \"name\": \"Shipping Company\"\n}",
+					"raw": "{\n    \"email\": \"user@email.com\",\n    \"password\": \"test\",\n    \"name\": \"Test User\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -152,26 +205,6 @@
 			"response": []
 		},
 		{
-			"name": "Get current user",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{authServiceUrl}}/api/v1/users/me",
-					"host": [
-						"{{authServiceUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"users",
-						"me"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Create OAuth Client",
 			"request": {
 				"auth": {
@@ -181,7 +214,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"clientId\": \"{{authServiceClientId}}\",\n    \"clientSecret\": \"{{authServiceClientSecret}}\",\n    \"clientName\": \"Auth Service Client\",\n    \"authorizationGrantTypes\": [\n        \"AUTHORIZATION_CODE\",\n        \"REFRESH_TOKEN\",\n        \"CLIENT_CREDENTIALS\"\n    ],\n    \"redirectUri\": \"http://127.0.0.1/auth-code\",\n    \"scopes\": [\n        \"users:read\"\n    ]\n}",
+					"raw": "{\n    \"clientId\": \"{{authServiceClientId}}\",\n    \"clientSecret\": \"{{authServiceClientSecret}}\",\n    \"clientName\": \"Auth Service Client\",\n    \"authorizationGrantTypes\": [\n        \"AUTHORIZATION_CODE\",\n        \"REFRESH_TOKEN\",\n        \"CLIENT_CREDENTIALS\"\n    ],\n    \"redirectUri\": \"http://127.0.0.1/auth-code\",\n    \"scopes\": [\n        \"{{authServiceClientScopes}}\"\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -201,11 +234,137 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Client Credentials token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"authServiceClientCredentialsAccessToken\", jsonData.access_token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{authServiceClientSecret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{authServiceClientId}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "{{authServiceClientId}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{authServiceClientSecret}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "{{authServiceClientScopes}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{authServiceUrl}}/oauth2/token",
+					"host": [
+						"{{authServiceUrl}}"
+					],
+					"path": [
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{authServiceUrl}}/api/v1/users/{{userId}}",
+					"host": [
+						"{{authServiceUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user Client Credentials Flow",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authServiceClientCredentialsAccessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{authServiceUrl}}/api/v1/users/{{userId}}",
+					"host": [
+						"{{authServiceUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
 		"type": "oauth2",
 		"oauth2": [
+			{
+				"key": "scope",
+				"value": "{{authServiceClientScopes}}",
+				"type": "string"
+			},
 			{
 				"key": "grant_type",
 				"value": "authorization_code",
@@ -234,11 +393,6 @@
 			{
 				"key": "challengeAlgorithm",
 				"value": "S256",
-				"type": "string"
-			},
-			{
-				"key": "scope",
-				"value": "users:read",
 				"type": "string"
 			},
 			{

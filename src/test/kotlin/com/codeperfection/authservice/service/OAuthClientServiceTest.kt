@@ -9,19 +9,21 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.whenever
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings
 import java.time.Clock
+import java.time.Duration
 import java.time.Instant
 import java.util.*
 
@@ -99,9 +101,9 @@ class OAuthClientServiceTest {
             )
         )
 
-        val registeredClientArgumentCaptor = ArgumentCaptor.forClass(RegisteredClient::class.java)
+        val registeredClientArgumentCaptor = argumentCaptor<RegisteredClient>()
         verify(registeredClientRepository).save(registeredClientArgumentCaptor.capture())
-        val savedRegisteredClient = registeredClientArgumentCaptor.value
+        val savedRegisteredClient = registeredClientArgumentCaptor.firstValue
 
         val generatedId = savedRegisteredClient.id
         val expectedRegisteredClient = RegisteredClient
@@ -116,6 +118,7 @@ class OAuthClientServiceTest {
             .redirectUri("someUri")
             .scope("users:write")
             .scope("users:read")
+            .tokenSettings(TokenSettings.builder().refreshTokenTimeToLive(Duration.ofDays(90)).build())
             .build()
         assertThat(savedRegisteredClient).isEqualTo(expectedRegisteredClient)
         val expected = OAuthClientDto(

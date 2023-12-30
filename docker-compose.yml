@@ -1,16 +1,16 @@
 services:
 
-  auth_app_service:
+  auth-app-service:
     container_name: auth_service_app
     build: .
     image: codeperfection/auth-service:latest
     restart: on-failure:3
     depends_on:
-      - auth_db_service
+      - auth-db-service
     ports:
       - "8081:8081"
 
-  auth_db_service:
+  auth-db-service:
     container_name: auth_service_db
     image: postgres:16-alpine
     ports:

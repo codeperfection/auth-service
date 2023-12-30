@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   datasource:
-    url: jdbc:postgresql://auth_db_service:5432/auth_db
+    url: jdbc:postgresql://auth-db-service:5432/auth_db
     username: master
     password: raHwQcbGUy7Y8I7ImVelLxaICDeF4ikH
   jpa:

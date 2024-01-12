@@ -5,9 +5,9 @@ import com.codeperfection.authservice.dto.CreateOAuthClientDto
 import com.codeperfection.authservice.dto.OAuthClientDto
 import com.codeperfection.authservice.exception.clienterror.OAuthClientIdTakenException
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -58,7 +58,7 @@ class OAuthClientServiceTest {
             .build()
         whenever(registeredClientRepository.findByClientId(clientId)).thenReturn(existingClient)
 
-        assertThatThrownBy {
+        assertThrows<OAuthClientIdTakenException> {
             underTest.createOAuthClient(
                 CreateOAuthClientDto(
                     clientId = clientId,
@@ -69,7 +69,7 @@ class OAuthClientServiceTest {
                     scopes = listOf("users:write", "users:read")
                 )
             )
-        }.isInstanceOf(OAuthClientIdTakenException::class.java)
+        }
 
         verify(registeredClientRepository).findByClientId(clientId)
     }

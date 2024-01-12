@@ -11,7 +11,6 @@ import com.codeperfection.authservice.repository.RoleRepository
 import com.codeperfection.authservice.repository.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +23,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val authenticationService: AuthenticationService,
     private val clock: Clock
 ) {
 
@@ -53,8 +53,8 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('SCOPE_users:read')")
     fun getUser(userId: UUID): UserDto {
+        authenticationService.checkReadAccess(userId)
         val user = userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException(userId)
         return mapToDto(user)
     }

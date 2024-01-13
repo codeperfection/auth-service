@@ -11,9 +11,9 @@ import com.codeperfection.authservice.exception.clienterror.UserNotFoundExceptio
 import com.codeperfection.authservice.repository.RoleRepository
 import com.codeperfection.authservice.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -38,6 +38,9 @@ class UserServiceTest {
     private lateinit var passwordEncoder: PasswordEncoder
 
     @Mock
+    private lateinit var authenticationService: AuthenticationService
+
+    @Mock
     private lateinit var clock: Clock
 
     @InjectMocks
@@ -45,7 +48,7 @@ class UserServiceTest {
 
     @AfterEach
     fun tearDown() {
-        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder)
+        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder, authenticationService)
     }
 
     @Test
@@ -53,7 +56,7 @@ class UserServiceTest {
         val email = "some@email.com"
         whenever(userRepository.existsByEmail(email)).thenReturn(true)
 
-        assertThatThrownBy {
+        assertThrows<EmailAlreadyTakenException> {
             underTest.createUser(
                 CreateUserDto(
                     email = email,
@@ -61,7 +64,7 @@ class UserServiceTest {
                     name = "someName"
                 )
             )
-        }.isInstanceOf(EmailAlreadyTakenException::class.java)
+        }
 
         verify(userRepository).existsByEmail(email)
     }
@@ -72,7 +75,7 @@ class UserServiceTest {
         whenever(userRepository.existsByEmail(email)).thenReturn(false)
         whenever(roleRepository.findByName(RoleName.ROLE_USER)).thenReturn(null)
 
-        assertThatThrownBy {
+        assertThrows<InternalServerErrorException> {
             underTest.createUser(
                 CreateUserDto(
                     email = email,
@@ -80,7 +83,7 @@ class UserServiceTest {
                     name = "someName"
                 )
             )
-        }.isInstanceOf(InternalServerErrorException::class.java)
+        }
 
         verify(userRepository).existsByEmail(email)
         verify(roleRepository).findByName(RoleName.ROLE_USER)
@@ -133,10 +136,11 @@ class UserServiceTest {
     fun `GIVEN missing user entity in db, WHEN getting user, THEN expected exception is thrown`() {
         val userId = UUID.fromString("5c557f7e-1849-435a-a3c7-cf342fb8c380")
         whenever(userRepository.findById(userId)).thenReturn(Optional.empty())
-        assertThatThrownBy {
+        assertThrows<UserNotFoundException> {
             underTest.getUser(userId)
-        }.isInstanceOf(UserNotFoundException::class.java)
+        }
         verify(userRepository).findById(userId)
+        verify(authenticationService).checkReadAccess(userId)
     }
 
     @Test
@@ -156,5 +160,6 @@ class UserServiceTest {
         whenever(userRepository.findById(userId)).thenReturn(Optional.of(user))
         assertThat(underTest.getUser(userId)).isEqualTo(UserDto(userId, email, name))
         verify(userRepository).findById(userId)
+        verify(authenticationService).checkReadAccess(userId)
     }
 }

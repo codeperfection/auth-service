@@ -59,11 +59,18 @@ class SecurityConfig(
     }
 
     @Bean
-    fun jwtIssuerCustomizer(
+    fun jwtAccessTokenCustomizer(
         @Value("\${auth-server.issuer-name}") issuerName: String
     ): OAuth2TokenCustomizer<JwtEncodingContext> = OAuth2TokenCustomizer { context ->
         if (context.tokenType.equals(OAuth2TokenType.ACCESS_TOKEN)) {
-            context.claims.claims { it["iss"] = issuerName }
+            // Set a custom issuer instead of using localhost in the name
+            context.claims.claim("iss", issuerName)
+
+            // The "sub" field of the access token is set as the client ID for client credentials flow.
+            // This creates ambiguity between tokens issued for authorization code flow (where a user is involved and
+            // user ID is in the token's "sub" field) and client credentials flow (where no user is involved). Hence, we
+            // add a custom "flow" claim to later distinguish and resolve the ambiguity.
+            context.claims.claim("flow", context.authorizationGrantType.value)
         }
     }
 

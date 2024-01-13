@@ -13,9 +13,9 @@ Auth Service is a modern, secure authentication and authorization server. It pro
 - **Java Version**: Compatibility with Java 21.
 
 ## How RSA keys are generated and encoded
-In order to create/sign/validate jwt tokens, we use pre-generated RSA keys (private one is protected with password).
-We use pre-generated RSA keys (instead of generating on the fly) in order to handle scaling of service (same keys are used in all pods).
-You can find these keys under `keys` directory of resources 
+We use pre-generated RSA keys to create, sign, and validate JWT tokens, ensuring the private key is password-protected.
+This approach, using a consistent key across all instances of the application, avoids on-the-fly key generation.
+These keys are located in the keys directory within the [src/main/resources](src/main/resources) directory
 
 Generation of keys was done with the following commands
 ```shell
@@ -23,7 +23,7 @@ openssl genpkey -algorithm RSA -out jwt_private_key.pem -pkeyopt rsa_keygen_bits
 openssl rsa -pubout -in jwt_private_key.pem -out jwt_public_key.pem
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in jwt_private_key.pem -out jwt_private_key_encoded.pem -passout pass:<PASSWORD>
 ```
-For details on how RSA keys are read and decoded please check `JwkSourceConfig` configuration class
+For details on how RSA keys are read and decoded check `JwkSourceConfig` configuration class.
 
 ## Supported authorization grant types
 Currently only 3 authorization grant types are supported
@@ -37,17 +37,17 @@ Use the Postman collection and environment in [postman](postman) directory to tr
 ### Running with Docker
 Required Docker version is 24.0.6 or above.
 - Navigate to the project root directory.
-- Run `docker compose up` to build and start both the application and the database services.
+- Run `docker compose up --build auth-app-service` to build and start both the application and the database services.
 - The application will be accessible on `http://localhost:8081`.
 
-### Running DB with Docker and Service with IDEA
+### Running only database with Docker
 1. **Starting the Database Service**:
-    - Run `docker compose up auth_db_service` to start only the PostgreSQL database service.
+    - Run `docker compose up auth-db-service` in a Terminal to start only the PostgreSQL database service.
     - The database will be accessible on `localhost:5433`.
 
 2. **Configuring and Running the Application Locally**:
-    - Ensure the application properties are configured to connect to `localhost:5433` for the database.
-    - Run the application through your IDE or command line (using Gradle or Kotlin commands).
+    - Default application properties are configured to connect to `localhost:5433` for the database.
+    - Run the application through your IDE or command line (`./gradlew bootRun`).
 
 ## Implementation nuances 
 ### Issuer configuration

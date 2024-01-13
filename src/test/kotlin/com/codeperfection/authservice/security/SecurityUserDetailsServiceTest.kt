@@ -4,9 +4,9 @@ import com.codeperfection.authservice.entity.Role
 import com.codeperfection.authservice.entity.RoleName
 import com.codeperfection.authservice.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -40,9 +40,9 @@ class SecurityUserDetailsServiceTest {
         val email = "nonExistingEmailAddress"
         whenever(userRepository.findByEmail(email)).thenReturn(null)
 
-        assertThatThrownBy {
+        assertThrows<UsernameNotFoundException> {
             underTest.loadUserByUsername(email)
-        }.isInstanceOf(UsernameNotFoundException::class.java)
+        }
 
         verify(userRepository).findByEmail(email)
     }

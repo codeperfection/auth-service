@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d6f2ab4b-caf5-4184-bffa-ab768c3b8b6f",
+		"_postman_id": "959d1da1-5a72-4d7e-a4cd-60c9cdca34b9",
 		"name": "AuthService",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31080886"
@@ -153,6 +153,53 @@
 							"path": [
 								"actuator",
 								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OAuth2",
+			"item": [
+				{
+					"name": "Get jwks",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{authServiceUrl}}/oauth2/jwks",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"oauth2",
+								"jwks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get OAuth config",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{authServiceUrl}}/.well-known/oauth-authorization-server",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								".well-known",
+								"oauth-authorization-server"
 							]
 						}
 					},

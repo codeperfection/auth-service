@@ -49,14 +49,11 @@ Required Docker version is 24.0.6 or above.
     - Default application properties are configured to connect to `localhost:5433` for the database.
     - Run the application through your IDE or command line (`./gradlew bootRun`).
 
-## Implementation nuances 
-### Issuer configuration
+## JWT Access Token Issuer configuration
 as you can see from application properties there is a custom property which holds issuer name:
 ```yaml
 auth-server:
   issuer-name: https://codeperfection.auth.com
 ```
 This configuration is needed to correctly set 'iss' claim in generated access tokens, 
-so that container orchestration can be done outside 'production' environment.
-This mean that counterpart should also get corresponding changes to do issuer validation correctly
-For details please see [example resource server configuration](https://github.com/codeperfection/ship-it/blob/main/src/main/kotlin/com/codeperfection/shipit/security/JwtIssuerValidatorReplacerConfig.kt)
+so that it's not set to localhost.
